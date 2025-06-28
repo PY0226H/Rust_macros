@@ -37,8 +37,13 @@ jobs:
         run: cargo check --all
       - name: Lint rust sources
         run: cargo clippy --all-targets --all-features --tests --benches
-      - name: Execute rust tests
-        run: cargo nextest run --all-features
+      - name: Execute rust tests (skip if no tests)
+        run: |
+          if cargo nextest list --all-features | grep -q .; then
+            cargo nextest run --all-features
+          else
+            echo "No tests found, skipping."
+          fi
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v2
         id: git-cliff
