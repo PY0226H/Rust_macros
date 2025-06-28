@@ -1,4 +1,3 @@
-use macros::my_ready;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
@@ -41,4 +40,15 @@ impl Future for MyFut {
             Poll::Pending
         }
     }
+}
+
+//my_ready! => Poll::Ready / Poll::Pending
+#[macro_export]
+macro_rules! my_ready {
+    ($expr:expr) => {
+        match $expr {
+            std::task::Poll::Ready(val) => std::task::Poll::Ready(val),
+            std::task::Poll::Pending => std::task::Poll::Pending,
+        }
+    };
 }
